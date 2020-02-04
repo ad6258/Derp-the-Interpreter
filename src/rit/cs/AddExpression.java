@@ -1,7 +1,7 @@
 package rit.cs;
 
 /**
- * This class encapsulates fields and methods to perform addition on a tree
+ * This class encapsulates fields and methods to perform addition on a tree's nodes
  * AddExpression implements the interface Expression
  *
  * @author Atharva Dhupkar ad6258@g.rit.edu
@@ -14,8 +14,8 @@ public class AddExpression implements Expression {
 
     /**
      * AddExpression instantiates left(field) and right(field) with the parameters left and right respectively.
-     * @param left left node of type Expression of "+"
-     * @param right right node of type Expression of "+"
+     * @param left left node of type Expression of "+" node
+     * @param right right node of type Expression of "+" node
      */
     public AddExpression(Expression left, Expression right){
         this.left = left;
@@ -23,7 +23,7 @@ public class AddExpression implements Expression {
     }
 
     /**
-     * This method adds the left and right nodes after they've been evaluated
+     * This method adds the left and right nodes after they've been further evaluated
      * @return sum of type int
      */
     @Override
@@ -32,7 +32,7 @@ public class AddExpression implements Expression {
     }
 
     /**
-     * emit prints the expression that is to be added
+     * emit returns the expression that is to be added in string form
      * @return String of the expression to be printed
      */
     @Override

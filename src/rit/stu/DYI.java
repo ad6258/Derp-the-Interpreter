@@ -7,27 +7,68 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
+ * This class encapsulated the functions of Derp Your Interpreter.
+ * Derp accepts prefix mathematical expressions (the mathematical operation is written at
+ * the beginning rather than in the middle).
+ * Derp then converts it to a tree using the parse function
+ * +, -, *, x, /, * are allowed for operations and only integer literals for operands
+ * Derp then evaluates the tree and then emits(prints) it.
  *
+ * @author Atharva Dhupkar ad6258@g.rit.edu
  */
 public class DYI {
+    /**
+     * Scanner "in" for input
+     */
     private Scanner in = new Scanner(System.in);
+    /**
+     * root of the tree i.e. first node
+     */
     private Expression root;
+    /**
+     * tokens is a list of the prefix expression that is entered by the user.
+     * each index has a single operator or operand.
+     */
     private ArrayList<String> tokens;
     public DYI(Scanner in){
         this.in = in;
     }
-    private void makeToken(Scanner in){
+
+    /**
+     * this method asks the user for input of the prefix expression and uses a for loop
+     * to convert it to an ArrayList of type String.
+     * @param in Scanner
+     * @return boolean: true if a prefix expression is input, false if quit is input
+     */
+    private boolean makeTokensList(Scanner in){
         System.out.print(">");
-        String prefix = in.nextLine();
+        String prefix = in.nextLine(); // input
+        if(prefix.equals("quit")){ //quitting
+            return false;
+        }
         tokens = new ArrayList<String>(prefix.length());
         for (int i = 0; i < prefix.length(); i++ ){
-            if(prefix.charAt(i) != ' '){
+            if(prefix.charAt(i) != ' '){ // if not blank space
                 tokens.add("" + prefix.charAt(i));
             }
         }
-        root = parse(tokens);
+        return true;
     }
 
+    /**
+     * This function makes a tree out of the tokens list
+     * Depending on the type of operator it returns a new instance of its
+     * respective class.
+     * Eg. is the operator is + it would return a new
+     * instance of AddExpression.
+     * this is a recursive function so it calls the parse function again
+     * as parameters of the constructor
+     * Eg. return new AddExpression(parse(tokens), parse(tokens)
+     * BASE CASE: if the node is an integer it returns an instance
+     * of the IntExpression class without any recursive case
+     * @param tokens list of tokens
+     * @return new instance of Expression
+     */
     private Expression parse(ArrayList<String> tokens) {
         String thing = tokens.remove(0);
         if(thing.equals("+")){
@@ -40,7 +81,7 @@ public class DYI {
             return new DivExpression(parse(tokens), parse(tokens));
         }
         else if(thing.equals("*") || thing.equals("x")){
-            return new AddExpression(parse(tokens), parse(tokens));
+            return new MulExpression(parse(tokens), parse(tokens));
         }
         else if(thing.equals("%")){
             return new DivExpression(parse(tokens), parse(tokens));
@@ -50,12 +91,30 @@ public class DYI {
         }
     }
 
+    /**
+     * this is the doEverything method of DYI that gets everything started.
+     * It keeps calling makeTokenList which returns a boolean (true if a prefix expression
+     * is input, false if quit is input) depending on if the user wants to quit or not.
+     * if not quit, it emits and evaluates the expression.
+     */
     public void doEverything(){
+        boolean choice;
         System.out.println("Derp Your Interpreter v1.0");
-        makeToken(in);
-        System.out.println("Emit: " + root.emit());
-        System.out.println("Evaluate: " + root.evaluate());
+        choice = makeTokensList(in);
+        while(choice) {
+            root = parse(tokens);
+            System.out.println("Emit: " + root.emit());
+            System.out.println("Evaluate: " + root.evaluate());
+            choice = makeTokensList(in);
+        }
+        System.out.println("Goodbye :'(");
     }
+
+    /**
+     * main function initializes a Scanner "in" and makes a new object "helper" of class DYI.
+     * it calls the doEverything function ot pass the control to the object "helper"
+     * @param args arguments from command line
+     */
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         DYI helper = new DYI(in);

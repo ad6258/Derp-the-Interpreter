@@ -4,6 +4,8 @@ import rit.cs.*;
 
 import java.util.ArrayList;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -20,7 +22,7 @@ public class DYI {
     /**
      * Scanner "in" for input
      */
-    private Scanner in = new Scanner(System.in);
+    private Scanner in;
     /**
      * root of the tree i.e. first node
      */
@@ -46,11 +48,40 @@ public class DYI {
         if(prefix.equals("quit")){ //quitting
             return false;
         }
+        int i = 0;
         tokens = new ArrayList<String>(prefix.length());
-        for (int i = 0; i < prefix.length(); i++ ){
-            if(prefix.charAt(i) != ' '){ // if not blank space
-                tokens.add("" + prefix.charAt(i));
+        String temp = "";
+        char character = prefix.charAt(i);
+
+        while(true){
+            // for double digit numbers
+            while(character != ' ') {
+                // to store character in temp until next character is a space
+                if (temp.equals("")) {
+                    temp = "" + character;
+                }
+                // if temp already has a character in it
+                else {
+                    temp = temp + character;
+                }
+                i++;
+                // to make sure i does not exceed length
+                if(i < prefix.length()) {
+                    character = prefix.charAt(i);
+                }
+                else
+                    break;
             }
+            tokens.add("" + temp);
+            temp = "";
+            i++;
+            // to make sure i does not exceed length
+            if(i < prefix.length()) {
+                character = prefix.charAt(i);
+            }
+            else
+                break;
+
         }
         return true;
     }
@@ -70,34 +101,34 @@ public class DYI {
      * @return new instance of Expression
      */
     private Expression parse(ArrayList<String> tokens) {
-        String thing = tokens.remove(0);
-        if(thing.equals("+")){
+        String firstToken = tokens.remove(0);
+        if(firstToken.equals("+")){
             return new AddExpression(parse(tokens), parse(tokens));
         }
-        else if(thing.equals("-")){
+        else if(firstToken.equals("-")){
             return new SubExpression(parse(tokens), parse(tokens));
         }
-        else if(thing.equals("/")){
+        else if(firstToken.equals("/")){
             return new DivExpression(parse(tokens), parse(tokens));
         }
-        else if(thing.equals("*") || thing.equals("x")){
+        else if(firstToken.equals("*") || firstToken.equals("x")){
             return new MulExpression(parse(tokens), parse(tokens));
         }
-        else if(thing.equals("%")){
+        else if(firstToken.equals("%")){
             return new DivExpression(parse(tokens), parse(tokens));
         }
         else{
-            return new IntExpression(Integer.parseInt(thing));
+            return new IntExpression(Integer.parseInt(firstToken));
         }
     }
 
     /**
-     * this is the doEverything method of DYI that gets everything started.
-     * It keeps calling makeTokenList which returns a boolean (true if a prefix expression
+     * this is the doLoop method of DYI that gets everything started.
+     * It loops over makeTokenList which returns a boolean (true if a prefix expression
      * is input, false if quit is input) depending on if the user wants to quit or not.
      * if not quit, it emits and evaluates the expression.
      */
-    public void doEverything(){
+    public void doLoop(){
         boolean choice;
         System.out.println("Derp Your Interpreter v1.0");
         choice = makeTokensList(in);
@@ -118,7 +149,7 @@ public class DYI {
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         DYI helper = new DYI(in);
-        helper.doEverything();
+        helper.doLoop();
         in.close();
     }
 }
